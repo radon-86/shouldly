@@ -12,11 +12,12 @@ public static partial class DynamicShould
 
     public static void HaveProperty(dynamic dynamicTestObject, string propertyName, string? customMessage = null)
     {
-        if (dynamicTestObject is IDynamicMetaObjectProvider)
+        if (dynamicTestObject is IDynamicMetaObjectProvider dynamicAsDynamicMetaObjectProvider)
         {
-            var dynamicAsDictionary = (IDictionary<string, object>)dynamicTestObject;
+            
+            DynamicMetaObject dynamicAsDynamicMetaObject = dynamicAsDynamicMetaObjectProvider.GetMetaObject(Expression.Constant(dynamicTestObject));
 
-            if (!dynamicAsDictionary.ContainsKey(propertyName))
+            if (!dynamicAsDynamicMetaObject.GetDynamicMemberNames().Contains(propertyName))
             {
                 throw new ShouldAssertException(new ExpectedShouldlyMessage(propertyName, customMessage).ToString());
             }

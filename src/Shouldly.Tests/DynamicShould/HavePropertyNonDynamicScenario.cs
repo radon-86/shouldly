@@ -6,6 +6,12 @@ public class HavePropertyNonDynamicScenario
     {
         public string? Bar { get; set; }
     }
+    
+    private class Bar
+    {
+        public string? Foo { get; set; }
+    }
+
 
     [Fact]
     public void HavePropertyNonDynamicScenarioShouldFail()
@@ -25,6 +31,29 @@ Additional Info:
 
             errorWithoutSource:
             @"Dynamic object should contain property ""foo"" but does not." + @"
+
+Additional Info:
+    Some additional context");
+    }
+
+
+    [Fact]
+    public void HaveNoPropertyDynamicScenarioShouldFail()
+    {
+        dynamic testDynamicObject = new Bar();
+
+        Verify.ShouldFail(() =>
+                Shouldly.DynamicShould
+                    .HaveProperty(testDynamicObject, "Bar"),
+
+            errorWithSource:
+            @"Dynamic object ""testDynamicObject"" should contain property ""Bar"" but does not." + @"
+
+Additional Info:
+    Some additional context",
+
+            errorWithoutSource:
+            @"Dynamic object should contain property ""Bar"" but does not." + @"
 
 Additional Info:
     Some additional context");
